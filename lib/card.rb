@@ -69,10 +69,6 @@ class Card
     ORDER[value]
   end
 
-  # Compares two cards to see if they're equal in suit & value.
-  def ==(other_card)
-  end
-
   def to_s
     color = [:hearts, :diamonds].include?(suit) ? :red : :black
     "#{VALUE_STRINGS[value]}#{SUIT_STRINGS[suit]}"

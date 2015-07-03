@@ -32,10 +32,15 @@ class Tableau
 
   def initialize(seed = true)
     @piles = Array.new(16) { [] }
-    seed_board if seed
+    # need to refactor to use separate classes and abstract away from physical
+    #   board geometry
+
     # piles       rows 0..7
     # freecells   rows 8..11
     # foundations rows 12..15
+    seed_board if seed
+    @cursor = [0,0]
+    @move_buffer = []
   end
 
   def [](pos)
@@ -52,18 +57,19 @@ class Tableau
     @piles.flatten.compact
   end
 
-  def deep_dup
-    copied_tab = Tableau.new(false)
-
-    cards.each do |card|
-      options = {suit:     card.suit,     value:   card.value,
-                 position: card.position.dup, tableau: copied_tab}
-      new_card = MoveableCard.new(options)
-      copied_tab.piles[card.position[0]] << new_card
-    end
-
-    copied_tab
-  end
+  #  currently unused but will keep code for implementing AI
+  # def deep_dup
+  #   copied_tab = Tableau.new(false)
+  #
+  #   cards.each do |card|
+  #     options = {suit:     card.suit,     value:   card.value,
+  #                position: card.position.dup, tableau: copied_tab}
+  #     new_card = MoveableCard.new(options)
+  #     copied_tab.piles[card.position[0]] << new_card
+  #   end
+  #
+  #   copied_tab
+  # end
 
   def free_cells
     @piles.take(12).count(&:empty?) # excludes foundations
@@ -129,6 +135,7 @@ class Tableau
       end
     end
     puts "Foundations:".green_bg
+    puts '     12    13    14    15  '.green_bg
     puts line.join(" | ".green_bg) + " |".green_bg
   end
 
@@ -142,6 +149,7 @@ class Tableau
       end
     end
     puts "Freecells:".green_bg
+    puts '      8     9    10    11  '.green_bg
     puts line.join(" | ".green_bg) + " |".green_bg
   end
 
@@ -177,14 +185,4 @@ class Tableau
     piles[0..11].all? { |pile| pile.empty? }
   end
 
-end
-
-
-
-if __FILE__ == $0
-  b = Tableau.new
-  # b.move([0,6],15)
-  # b.move([0,5],6)
-  # b.move([1,6])
-  b.render_all
 end

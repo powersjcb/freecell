@@ -20,8 +20,6 @@ class FreeCell
 
     puts "Thanks for playing"
     puts "You win!" if @tableau.won?
-
-
   end
 
   def get_user_input
